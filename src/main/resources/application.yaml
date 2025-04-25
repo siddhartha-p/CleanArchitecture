@@ -1,0 +1,23 @@
+micronaut:
+  application:
+    name: clean-arch
+
+
+r2dbc:
+  datasources:
+    default:
+      options:
+        driver: pool
+        protocol: postgres
+        initialSize: 5
+        maxSize: 35
+        maxLifetime: PT280S
+        maxIdleTime: PT240S
+        maxAcquireTime: PT6S
+        poolName: webcheckout-r2dbc
+
+      url: ${DB_URL:`r2dbc:pool:postgresql://localhost:5432/postgres?stringtype=unspecified`}
+      username: ${DB_USER:postgres}
+      password: ${DB_PASSWORD:password123}
+      schema-generate: CREATE
+      dialect: POSTGRES
