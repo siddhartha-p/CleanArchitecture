@@ -1,6 +1,15 @@
 micronaut:
   application:
     name: clean-arch
+  security:
+    authentication: bearer
+    token:
+    jwt:
+      enables: true
+      signatures:
+        secret:
+          generator:
+            secret: "mysecretforjwt1234"
 
 
 r2dbc:
