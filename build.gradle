@@ -17,6 +17,7 @@ dependencies {
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
     annotationProcessor("io.micronaut.data:micronaut-data-processor:2.4.3")
     annotationProcessor("io.soabase.record-builder:record-builder-processor:1.19")
+    annotationProcessor("io.micronaut.security:micronaut-security-annotations")
 
     compileOnly("io.soabase.record-builder:record-builder-core:1.19")
     implementation("io.micronaut:micronaut-http-client")
@@ -26,6 +27,7 @@ dependencies {
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("io.micronaut.reactor:micronaut-reactor")
     implementation("io.micronaut.data:micronaut-data-r2dbc")
+    implementation("io.micronaut.security:micronaut-security-jwt")
 
     implementation "io.r2dbc:r2dbc-h2"
     implementation("org.postgresql:r2dbc-postgresql:1.0.5.RELEASE")
@@ -59,6 +61,8 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.17.1'
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
     implementation("io.jsonwebtoken:jjwt-api:0.12.5")
+
+    aotPlugins("io.micronaut.security:micronaut-security-aot")
 
 }
 
