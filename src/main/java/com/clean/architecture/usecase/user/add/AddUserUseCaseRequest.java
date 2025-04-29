@@ -13,6 +13,8 @@ public record AddUserUseCaseRequest(
         @NotBlank(message = "Email is required")
         String email,
         @NotBlank(message = "Address is required")
-        String address
+        String address,
+        @NotBlank(message= "Password is required")
+        String password
 ) implements UseCase.Request {
 }

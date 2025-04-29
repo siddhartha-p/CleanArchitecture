@@ -8,9 +8,12 @@ import org.h2.engine.User;
 
 import java.util.UUID;
 
+import static com.clean.architecture.core.security.PasswordEncoder.hashPassword;
+
 public class UserConverter {
     private UserConverter() {
     }
+
 
     public static UserEntity toEntity(AddUserUseCaseRequest user) {
         UserEntity userEntity = new UserEntity();
@@ -18,7 +21,7 @@ public class UserConverter {
         userEntity.setUsername(user.username());
         userEntity.setEmail(user.email());
         userEntity.setAddress(user.address());
-        userEntity.setPassword("Hashing Password");
+        userEntity.setPassword(hashPassword(user.password()));
         userEntity.setRole("USER");
         userEntity.setStatus("ACTIVE");
         userEntity.setCreatedAt("2022-01-01");
