@@ -47,16 +47,22 @@ public class UserController {
 
 
     @Delete("delete")
-    public Mono<RestResponse<DeleteUserUseCaseResponse>> delete(@Body DeleteUserUseCaseRequest request){
+    public Mono<RestResponse<DeleteUserUseCaseResponse>> delete(@Body DeleteUserUseCaseRequest request,@Header("Authorization") String authorization){
+        if (JwtUtils.isValidToken(authorization)) {
         return this.deleteUserUseCase.execute(request)
                 .map(RestResponse::success)
                 .onErrorResume(err -> Mono.just(RestResponse.error(err.getLocalizedMessage())));
     }
+        return Mono.just(RestResponse.error("invalid Token"));
+    }
 
     @Put("update")
-    public Mono<RestResponse<UpdateUserUseCaseResponse>> update(@Body UpdateUserUseCaseRequest request){
-       return this.updateUserUseCase.execute(request).map(RestResponse::success)
-               .onErrorResume(err->Mono.just(RestResponse.error(err.getLocalizedMessage())));
+    public Mono<RestResponse<UpdateUserUseCaseResponse>> update(@Body UpdateUserUseCaseRequest request,@Header("Authorization") String authorization) {
+        if (JwtUtils.isValidToken(authorization)) {
+            return this.updateUserUseCase.execute(request).map(RestResponse::success)
+                    .onErrorResume(err -> Mono.just(RestResponse.error(err.getLocalizedMessage())));
+        }
+        return Mono.just(RestResponse.error("invalid Token"));
     }
 
 
