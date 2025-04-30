@@ -1,5 +1,6 @@
 package com.clean.architecture.controller;
 
+import com.clean.architecture.Utils.JwtUtils;
 import com.clean.architecture.core.response.RestResponse;
 import com.clean.architecture.usecase.user.add.AddUserUseCase;
 import com.clean.architecture.usecase.user.add.AddUserUseCaseRequest;
@@ -15,6 +16,8 @@ import jakarta.inject.Inject;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+
+//@Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller("users")
 public class UserController {
 
@@ -33,11 +36,15 @@ public class UserController {
     }
 
     @Post("add")
-    public Mono<RestResponse<AddUserUseCaseResponse>> post(@Body AddUserUseCaseRequest request) {
-        return addUserUseCase.execute(request)
-                .map(RestResponse::success)
-                .onErrorResume(err -> Mono.just(RestResponse.error(err.getLocalizedMessage())));
+    public Mono<RestResponse<AddUserUseCaseResponse>> post(@Body AddUserUseCaseRequest request, @Header("Authorization") String authorization) {
+        if (JwtUtils.isValidToken(authorization)) {
+            return addUserUseCase.execute(request)
+                    .map(RestResponse::success)
+                    .onErrorResume(err -> Mono.just(RestResponse.error(err.getLocalizedMessage())));
+        }
+        return Mono.just(RestResponse.error("invalid Token"));
     }
+
 
     @Delete("delete")
     public Mono<RestResponse<DeleteUserUseCaseResponse>> delete(@Body DeleteUserUseCaseRequest request){

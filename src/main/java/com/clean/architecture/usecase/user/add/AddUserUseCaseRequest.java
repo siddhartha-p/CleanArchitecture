@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Serdeable
 public record AddUserUseCaseRequest(
+
         @NotBlank(message="Id is required")
         String id,
         @NotBlank(message = "Username is required")

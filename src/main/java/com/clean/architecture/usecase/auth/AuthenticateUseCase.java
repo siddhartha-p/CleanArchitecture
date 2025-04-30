@@ -1,15 +1,15 @@
 package com.clean.architecture.usecase.auth;
 
+import com.clean.architecture.Utils.JwtUtils;
 import com.clean.architecture.core.usecase.UseCase;
 import com.clean.architecture.repository.UserRepository;
 import jakarta.inject.Inject;
-import org.h2.engine.User;
 import org.mindrot.jbcrypt.BCrypt;
 import reactor.core.publisher.Mono;
 
 public class AuthenticateUseCase implements UseCase<AuthenticateUseCaseRequest, AuthenticateUseCaseResponse> {
 
-    public final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Inject
     public AuthenticateUseCase(UserRepository userRepository){
@@ -22,7 +22,8 @@ public class AuthenticateUseCase implements UseCase<AuthenticateUseCaseRequest, 
                 .switchIfEmpty(Mono.error(new IllegalArgumentException("Data for username "+request.username()+" not found")))
                 .flatMap(user->{
                     if(BCrypt.checkpw(request.password(),user.getPassword())){
-                        return Mono.just(new AuthenticateUseCaseResponse("password is matched"));
+                        return Mono.just(new AuthenticateUseCaseResponse(JwtUtils.generate(request)));
+
                     }else{
                         return Mono.error(new RuntimeException("invalid password"));
                     }
