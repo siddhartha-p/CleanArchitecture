@@ -8,6 +8,7 @@ import com.clean.architecture.usecase.user.add.AddUserUseCaseResponse;
 import com.clean.architecture.usecase.user.delete.DeleteUserUseCase;
 import com.clean.architecture.usecase.user.delete.DeleteUserUseCaseRequest;
 import com.clean.architecture.usecase.user.delete.DeleteUserUseCaseResponse;
+import com.clean.architecture.usecase.user.find.*;
 import com.clean.architecture.usecase.user.update.UpdateUserUseCase;
 import com.clean.architecture.usecase.user.update.UpdateUserUseCaseRequest;
 import com.clean.architecture.usecase.user.update.UpdateUserUseCaseResponse;
@@ -24,19 +25,25 @@ public class UserController {
     private final AddUserUseCase addUserUseCase;
     private final DeleteUserUseCase deleteUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
+    private final GetAllUserUseCase getAllUserUseCase;
+    private final GetUserByIdUseCase getUserByIdUseCase;
 
     // Bean , types of bean in micronaut
 // annotation
     @Inject
-    public UserController(AddUserUseCase addUserUseCase, DeleteUserUseCase deleteUserUseCase, UpdateUserUseCase updateUserUseCase) {
+    public UserController(AddUserUseCase addUserUseCase, DeleteUserUseCase deleteUserUseCase, UpdateUserUseCase updateUserUseCase,
+                          GetAllUserUseCase getAllUserUseCase, GetUserByIdUseCase getUserByIdUseCase) {
         this.addUserUseCase = addUserUseCase;
         this.deleteUserUseCase = deleteUserUseCase;
         this.updateUserUseCase=updateUserUseCase;
+        this.getAllUserUseCase=getAllUserUseCase;
+        this.getUserByIdUseCase=getUserByIdUseCase;
 
     }
 
     @Post("add")
-    public Mono<RestResponse<AddUserUseCaseResponse>> post(@Body AddUserUseCaseRequest request, @Header("Authorization") String authorization) {
+    public Mono<RestResponse<AddUserUseCaseResponse>> post(@Body AddUserUseCaseRequest request, @Header("Authorization") String authorization)
+    {
         if (JwtUtils.isValidToken(authorization)) {
             return addUserUseCase.execute(request)
                     .map(RestResponse::success)
@@ -68,10 +75,25 @@ public class UserController {
 
 
 
-    @Get("/testa")
-    public Flux<String> test(){
-        return Flux.just("Test 1 2 3","hello 1,2,3");
+     @Get("getAll")
+    public Flux<GetAllUserUseCaseResponse> getAllUsers(@Header("Authorization") String authorization){
+        if(JwtUtils.isValidToken(authorization)){
+                return getAllUserUseCase.execute();
+        }
+
+         return Flux.error(new RuntimeException("Invalid token"));
+     }
+
+     @Get("getOne/{id}")
+    public Mono<GetUserByIdUseCaseResponse> getOneUsers(@PathVariable String id, @Header("Authorization") String authorization){
+        if(JwtUtils.isValidToken(authorization)){
+            return getUserByIdUseCase.execute(new GetUserByIDUseCaseRequest(id));
+        }
+        return Mono.error(new RuntimeException("Invalid token"));
+     }
+
+
     }
 
 
-}
+

@@ -3,6 +3,7 @@ package com.clean.architecture.Utils;
 import com.clean.architecture.usecase.auth.AuthenticateUseCaseRequest;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.micronaut.context.annotation.Value;
@@ -47,7 +48,7 @@ public class JwtUtils {
 
             Claims claims = jws.getPayload();
             return isTokenExpired(claims.getExpiration());
-        } catch (Exception ex) {
+        } catch (JwtException ex) {
             System.out.println("Exception on parsing token");
             return false;
         }
